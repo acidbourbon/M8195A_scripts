@@ -10,7 +10,7 @@ import sys
 def pulser(**kwargs):
 
   trace       = int(kwargs.get("trace",1))
-  on_val      = float(kwargs.get("on_val",1))
+  on_val      = float(kwargs.get("on_val",0.5))
   idle_val    = float(kwargs.get("idle_val",0))
   pulse_with  = float(kwargs.get("width",50e-9))
   sample_rate = int(float(kwargs.get("sample_rate",64e9)))
