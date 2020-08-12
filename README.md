@@ -16,6 +16,7 @@ on_val=1
 idle_val=0
 trace=1
 width=50e-9
+ip=192.168.0.203
 ```
 
 

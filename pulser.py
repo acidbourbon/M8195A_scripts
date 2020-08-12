@@ -15,6 +15,7 @@ def pulser(**kwargs):
   pulse_with  = float(kwargs.get("width",50e-9))
   sample_rate = int(float(kwargs.get("sample_rate",64e9)))
   invert      = int(kwargs.get("invert",0))
+  ip          = str(kwargs.get("ip","192.168.0.203"))
 
   #volt        = float(kwargs.get("volt",0.5))
   volt = np.max(np.abs([idle_val,on_val]))
@@ -47,7 +48,7 @@ def pulser(**kwargs):
   cmdString = ":TRAC{:d}:DATA 1,0,{}".format(trace,dataString)
   
   # Open socket, create waveform, send data, read back and close socket
-  session = sock.SCPI_sock_connect('192.168.0.203')
+  session = sock.SCPI_sock_connect(ip)
 
   print(sock.SCPI_sock_query(session,"*idn?"))
 
