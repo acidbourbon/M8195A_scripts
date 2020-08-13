@@ -49,8 +49,18 @@ def send_csv(**kwargs):
 
   ydata = data[:,1]*yscale
 
+
   target_x = np.arange(0,width,1./sample_rate)
   target_x , target_y = resample(target_x,xdata,ydata,fill_value=idle_val)
+
+  if( np.max(np.abs(target_y)) > 0.5):
+    print("####################################")
+    print("## WARNING: Waveform will clip!!! ##")
+    print("####################################")
+
+  # clip to allowed value range
+  target_y[target_y > 0.5] = 0.5
+  target_y[target_y < -0.5] = -0.5
 
 
   #volt        = float(kwargs.get("volt",0.5))
@@ -63,6 +73,7 @@ def send_csv(**kwargs):
   if(invert):
     idle_val = -idle_val
     target_y = -target_y
+
 
   idle_val_dac = int(idle_val*127)
 
