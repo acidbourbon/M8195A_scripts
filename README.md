@@ -1,5 +1,20 @@
 # M8195A_scripts
 
+## Dependencies
+python3
+
+numpy
+
+scipy
+
+pyltspice
+
+```
+# install all dependencies
+
+sudo pip3 install numpy scipy pyltspice
+```
+
 ## pulser.py
 
 generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
@@ -57,3 +72,36 @@ xscale=1
 yscale=1
 ip=192.168.0.203
 ```
+
+## send_ltspice.py
+
+read in LTSpice .raw file (binary simulation output file, containing all voltages and currents)
+
+waveform is resampled/interpolated and then sent to AWG
+
+example circuit - models a typical PMT signal
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_asc.png)
+example circuit simulated waveform
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_raw.png)
+measured waveform from AWG
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_scope.png)
+
+example usage:
+```
+./send_ltspice.py trace=1 file=ltspice_example/example.raw signal="V(output)"
+```
+optional parameters/standard values:
+```
+file=<none>
+sample_rate=65e9
+signal="V(output)"
+invert=0
+idle_val=0
+trace=1
+delay=0e-9
+xscale=1
+yscale=1
+ip=192.168.0.203
+```
+
+Thanks to Nuno Brum for the beautiful LTSpice RawReader module!
