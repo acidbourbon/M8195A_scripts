@@ -5,7 +5,7 @@
 example usage:
 ```
 ./pulser.py width=50e-9 trace=1 on_val=0.5 idle_val=0
-./pulser.py width=30e-9 trace=2 on_val=-0.3 idle_val=0.1
+./pulser.py width=30e-9 trace=2 on_val=-0.3 idle_val=0.1 delay=10e-9
 ```
 
 optional parameters/standard values:
@@ -16,6 +16,7 @@ on_val=0.5
 idle_val=0
 trace=1
 width=50e-9
+delay=0e-9
 ip=192.168.0.203
 ```
 
