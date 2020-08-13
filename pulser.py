@@ -12,7 +12,7 @@ def pulser(**kwargs):
   trace       = int(kwargs.get("trace",1))
   on_val      = float(kwargs.get("on_val",0.5))
   idle_val    = float(kwargs.get("idle_val",0))
-  pulse_with  = float(kwargs.get("width",50e-9))
+  width  = float(kwargs.get("width",50e-9))
   sample_rate = int(float(kwargs.get("sample_rate",64e9)))
   invert      = int(kwargs.get("invert",0))
   ip          = str(kwargs.get("ip","192.168.0.203"))
@@ -31,7 +31,7 @@ def pulser(**kwargs):
   on_val_dac = int(on_val*127)
 
   
-  n = int(pulse_with*sample_rate)
+  n = int(width*sample_rate)
   
   # sample len must be a multiple of 128
   sample_len = np.max([int(n/128+1)*128,128]) # multiples of 128
