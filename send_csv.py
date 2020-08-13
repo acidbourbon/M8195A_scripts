@@ -29,7 +29,7 @@ def send_csv(**kwargs):
   #width       = float(kwargs.get("width",50e-9))
   delay       = float(kwargs.get("delay",0e-9))
   #offset      = float(kwargs.get("offset",0e-9))
-  sample_rate = int(float(kwargs.get("sample_rate",64e9)))
+  sample_rate = int(float(kwargs.get("sample_rate",65e9)))
   invert      = int(kwargs.get("invert",0))
   ip          = str(kwargs.get("ip","192.168.0.203"))
 

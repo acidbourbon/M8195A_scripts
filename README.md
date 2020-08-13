@@ -15,7 +15,7 @@ example usage:
 
 optional parameters/standard values:
 ```
-sample_rate=64e9
+sample_rate=65e9
 invert=0
 on_val=0.5
 idle_val=0
@@ -48,7 +48,7 @@ optional parameters/standard values:
 ```
 file=<none>
 delimiter=","
-sample_rate=64e9
+sample_rate=65e9
 invert=0
 idle_val=0
 trace=1
