@@ -2,6 +2,8 @@
 
 ## pulser.py
 
+generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser.png)
 
 
@@ -24,6 +26,14 @@ ip=192.168.0.203
 ```
 
 ## send_csv.py
+
+read in two column csv file and send it to the AWG
+first column is time in seconds
+second column is voltage in volts
+
+standard delimiter is "," but can be adjusted (see below)
+
+waveform is resampled/interpolated, so time steps can be arbitrary
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/send_csv.png)
 
