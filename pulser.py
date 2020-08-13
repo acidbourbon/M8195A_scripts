@@ -19,6 +19,9 @@ def pulser(**kwargs):
   invert      = int(kwargs.get("invert",0))
   ip          = str(kwargs.get("ip","192.168.0.203"))
 
+  if ((sample_rate < 53.76e9) or (sample_rate > 65e9)):
+    raise NameError('sample rate must be >=53.76e9 and <= 65.0e9')
+
   #volt        = float(kwargs.get("volt",0.5))
   offset = 0
   volt = np.max(np.abs([idle_val,on_val]))
