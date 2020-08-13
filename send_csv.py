@@ -24,6 +24,8 @@ def send_csv(**kwargs):
   trace       = int(kwargs.get("trace",1))
   #on_val      = float(kwargs.get("on_val",0.5))
   idle_val    = float(kwargs.get("idle_val",0))
+  yscale      = float(kwargs.get("yscale",1))
+  xscale      = float(kwargs.get("xscale",1))
   #width       = float(kwargs.get("width",50e-9))
   delay       = float(kwargs.get("delay",0e-9))
   #offset      = float(kwargs.get("offset",0e-9))
@@ -40,12 +42,12 @@ def send_csv(**kwargs):
 
 
   data = np.loadtxt(my_file, delimiter=delimiter)
-  xdata = data[:,0]
+  xdata = data[:,0]*xscale
   xdata += delay
 
   width = xdata[-1]
 
-  ydata = data[:,1]
+  ydata = data[:,1]*yscale
 
   target_x = np.arange(0,width,1./sample_rate)
   target_x , target_y = resample(target_x,xdata,ydata,fill_value=idle_val)
