@@ -28,7 +28,9 @@ ip=192.168.0.203
 ## send_csv.py
 
 read in two column csv file and send it to the AWG
+
 first column is time in seconds
+
 second column is voltage in volts
 
 standard delimiter is "," but can be adjusted (see below)
