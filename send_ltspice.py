@@ -4,6 +4,7 @@ import struct
 from time import sleep
 import numpy as np
 import sys
+import os
 
 from scipy import interpolate
 
@@ -22,8 +23,8 @@ def resample(target_x,data_x,data_y,**kwargs):
 
 def send_ltspice(**kwargs):
 
-  my_file     = kwargs.get("file",0)
-  signal      = str(kwargs.get("signal","V(output)"))
+  my_file     = str(kwargs.get("file",""))
+  signal      = str(kwargs.get("signal",""))
 
   trace       = int(kwargs.get("trace",1))
   #on_val      = float(kwargs.get("on_val",0.5))
@@ -37,12 +38,54 @@ def send_ltspice(**kwargs):
   invert      = int(kwargs.get("invert",0))
   ip          = str(kwargs.get("ip","192.168.0.203"))
 
+
+  signal1     = str(kwargs.get("signal1",""))
+  signal2     = str(kwargs.get("signal2",""))
+  signal3     = str(kwargs.get("signal3",""))
+  signal4     = str(kwargs.get("signal4",""))
+
+  multichan = 0
+  multichan_dic = {}
+
+  if ((signal != "") and (trace <= 4) and (trace >=1)):
+    multichan_dic[trace] = signal
+
+  if (signal1 != ""):
+    multichan = 1
+    multichan_dic[1] = signal1 
+
+  if (signal2 != ""):
+    multichan = 1
+    multichan_dic[2] = signal2 
+
+  if (signal3 != ""):
+    multichan = 1
+    multichan_dic[3] = signal3 
+
+  if (signal4 != ""):
+    multichan = 1
+    multichan_dic[4] = signal4 
+
+  if (len(multichan_dic.keys()) == 0):
+    print("I got no signal= argument. Stop.")
+    exit()
+
+  #print(multichan_dic)
+  #exit()
+
+
   if ((sample_rate < 53.76e9) or (sample_rate > 65e9)):
-    raise NameError('sample rate must be >=53.76e9 and <= 65.0e9')
+    print('sample rate must be >=53.76e9 and <= 65.0e9')
+    exit()
 
   
-  if (my_file == 0):
-    raise NameError("no file=<file> argument given")
+  if (my_file == ""):
+    print("no file=<file> argument given")
+    exit()
+
+  if (os.path.exists(my_file) == False):
+    raise NameError("file {} does not exist!".format(my_file))
+    exit()
 
 
   ltr = RawRead(my_file)
