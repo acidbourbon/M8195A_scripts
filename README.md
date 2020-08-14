@@ -82,10 +82,15 @@ read in LTSpice .raw file (binary simulation output file, containing all voltage
 waveform is resampled/interpolated and then sent to AWG
 
 example circuit - models a typical PMT signal
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_asc.png)
+
 example circuit simulated waveform
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_raw.png)
+
 measured waveform from AWG
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_scope.png)
 
 example usage:
@@ -109,15 +114,24 @@ ip=192.168.0.203
 ### multi channel example
 
 example circuit - four different uses of the LTSpice voltage source
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_asc.png)
+
 example circuit simulated waveforms
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_raw.png)
+
 measured waveforms from AWG
+
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_scope.png)
 
 example usage:
 ```
-./send_ltspice.py file=ltspice_example/example_multichan.raw signal1="V(out1)" signal2="V(out2)" signal3="V(out3)" signal4="V(out4)"
+./send_ltspice.py file=ltspice_example/example_multichan.raw \
+  signal1="V(out1)" \
+  signal2="V(out2)" \
+  signal3="V(out3)" \
+  signal4="V(out4)"
 ```
 
 ## Acknowledgements
