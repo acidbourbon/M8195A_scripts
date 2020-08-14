@@ -88,73 +88,18 @@ def send_ltspice(**kwargs):
     exit()
 
 
-  ltr = RawRead(my_file)
-    
-                                                                  
-  IR1 = ltr.get_trace(signal)
-  x = ltr.get_trace("time") 
-                                                                        
-  #  #### the abs() is a quick and dirty fix for some strange sign decoding errors
-  xdata = abs(x.get_wave(0))
-  ydata = IR1.get_wave(0)
 
-
-  xdata = xdata*xscale + delay
-
-  width = xdata[-1]
-
-  ydata = ydata*yscale
-
-
-  target_x = np.arange(0,width,1./sample_rate)
-  target_x , target_y = resample(target_x,xdata,ydata,fill_value=idle_val)
-
-  if( np.max(np.abs(target_y)) > 0.5):
-    print("####################################")
-    print("## WARNING: Waveform will clip!!! ##")
-    print("####################################")
-
-  # clip to allowed value range
-  target_y[target_y > 0.5] = 0.5
-  target_y[target_y < -0.5] = -0.5
-
-
-  #volt        = float(kwargs.get("volt",0.5))
-  offset = 0
-  volt = np.max(np.abs(target_y))
-  idle_val = idle_val/volt
-  target_y = target_y*127./volt
-  volt = volt*2
-
-  if(invert):
-    idle_val = -idle_val
-    target_y = -target_y
-
-
-  idle_val_dac = int(idle_val*127)
-
-  #n_delay = int(delay*sample_rate) 
-  n_offset = int(offset*sample_rate) 
-  n = int(len(target_x))
-  
-  # sample len must be a multiple of 128
-  sample_len = np.max([int((n)/128+1)*128,128]) # multiples of 128
-  #print("sample len :{:d}".format(sample_len))
-  
-  #dataList = [-100 for i in range(sample_len)]
-  
-  dataList = idle_val_dac*np.ones(sample_len)
-  
-  dataList[0:n] = target_y
-  dataList = dataList.astype(np.int).tolist()
-  
-  dataString = ",".join(map(str,dataList))
-  cmdString = ":TRAC{:d}:DATA 1,{:d},{}".format(trace,n_offset,dataString)
-  
   # Open socket, create waveform, send data, read back and close socket
+  print("connect to device ...")
   session = sock.SCPI_sock_connect(ip)
-
-  print(sock.SCPI_sock_query(session,"*idn?"))
+  print("*IDN?")
+  idn_str = sock.SCPI_sock_query(session,"*idn?")
+  print(idn_str)
+  if ( "Keysight Technologies,M8195A" in idn_str):
+    print("success!")
+  else:
+    sock.SCPI_sock_close(session)
+    raise NameError("could not communicate with device, or not a Keysight Technologies,M8195A")
 
   sock.SCPI_sock_send(session,":INIT:IMM")
   print("sample rate (Hz):")
@@ -162,21 +107,91 @@ def send_ltspice(**kwargs):
   print(sock.SCPI_sock_query(session,":SOUR:FREQ:RAST?"))
   
   sock.SCPI_sock_send(session,":ABOR")
-  
-  print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
-  sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
-  sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,262144,{:d}".format(trace,idle_val_dac))
-  
-  #send data
-  print("sending data ...")
-  sock.SCPI_sock_send(session,cmdString)
-  #print(sock.SCPI_sock_query(session,":TRAC1:DATA? 1,0,512"))
 
-  print("set output voltage ...")
-  sock.SCPI_sock_send(session,":VOLT{:d} {:3.3f}".format(trace,volt))
 
-  print("Output {:d} on ...".format(trace))
-  sock.SCPI_sock_send(session,":OUTP{:d} ON".format(trace))
+  ltr = RawRead(my_file)
+    
+  for trace in multichan_dic.keys():
+  
+    signal = multichan_dic[trace]
+    IR1 = ltr.get_trace(signal)
+    x = ltr.get_trace("time") 
+                                                                          
+    #  #### the abs() is a quick and dirty fix for some strange sign decoding errors
+    xdata = abs(x.get_wave(0))
+    ydata = IR1.get_wave(0)
+
+
+    xdata = xdata*xscale + delay
+
+    width = xdata[-1]
+
+    ydata = ydata*yscale
+
+
+    target_x = np.arange(0,width,1./sample_rate)
+    target_x , target_y = resample(target_x,xdata,ydata,fill_value=idle_val)
+
+    if( np.max(np.abs(target_y)) > 0.5):
+      print("####################################")
+      print("## WARNING: Waveform will clip!!! ##")
+      print("####################################")
+
+    # clip to allowed value range
+    target_y[target_y > 0.5] = 0.5
+    target_y[target_y < -0.5] = -0.5
+
+
+    #volt        = float(kwargs.get("volt",0.5))
+    offset = 0
+    volt = np.max(np.abs(target_y))
+    idle_val = idle_val/volt
+    target_y = target_y*127./volt
+    volt = volt*2
+
+    if(invert):
+      idle_val = -idle_val
+      target_y = -target_y
+
+
+    idle_val_dac = int(idle_val*127)
+
+    #n_delay = int(delay*sample_rate) 
+    n_offset = int(offset*sample_rate) 
+    n = int(len(target_x))
+    
+    # sample len must be a multiple of 128
+    sample_len = np.max([int((n)/128+1)*128,128]) # multiples of 128
+    #print("sample len :{:d}".format(sample_len))
+    
+    #dataList = [-100 for i in range(sample_len)]
+    
+    dataList = idle_val_dac*np.ones(sample_len)
+    
+    dataList[0:n] = target_y
+    dataList = dataList.astype(np.int).tolist()
+    
+    dataString = ",".join(map(str,dataList))
+    cmdString = ":TRAC{:d}:DATA 1,{:d},{}".format(trace,n_offset,dataString)
+    
+    
+    print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
+    sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
+    sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,262144,{:d}".format(trace,idle_val_dac))
+    
+    #send data
+    print("sending data ...")
+    sock.SCPI_sock_send(session,cmdString)
+    #print(sock.SCPI_sock_query(session,":TRAC1:DATA? 1,0,512"))
+
+    print("set output voltage ...")
+    sock.SCPI_sock_send(session,":VOLT{:d} {:3.3f}".format(trace,volt))
+
+    print("Output {:d} on ...".format(trace))
+    sock.SCPI_sock_send(session,":OUTP{:d} ON".format(trace))
+
+  # done with individual trace stuff
+
   print("run!")
   sock.SCPI_sock_send(session,":INIT:IMM")
   print("close socket")
