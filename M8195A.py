@@ -111,21 +111,25 @@ def set_sample_rate(sample_rate):
     raise NameError("there is no running communication session with AWG!")
   session = local_objects["session"]
   
-  print("set sample rate : {:f} Hz".format(sample_rate))
+  print("attempting to set sample rate : {:f} Hz".format(sample_rate))
   
   sock.SCPI_sock_send(session,":INIT:IMM")
   sock.SCPI_sock_send(session,":SOUR:FREQ:RAST {:d}".format(int(sample_rate)))
-  print("read back sample rate (Hz):")
-  print(sock.SCPI_sock_query(session,":SOUR:FREQ:RAST?"))
+  #print("read back sample rate (Hz):")
+  read_back = sock.SCPI_sock_query(session,":SOUR:FREQ:RAST?")
   sock.SCPI_sock_send(session,":ABOR")
+  #print(read_back)
+  if( float(read_back) == float(sample_rate)):
+    print("success!")
+  else:
+    raise NameError("could not set desired sample rate!")
+  
   
   
 def program_trace(xdata,ydata,**kwargs):
   if (not("session" in local_objects.keys())):
     raise NameError("there is no running communication session with AWG!")
   session = local_objects["session"]
-  
-  
   
   trace       = int(kwargs.get("trace",1))
   idle_val    = float(kwargs.get("idle_val",0))
@@ -134,6 +138,8 @@ def program_trace(xdata,ydata,**kwargs):
   delay       = float(kwargs.get("delay",0e-9))
   sample_rate = int(float(kwargs.get("sample_rate",65e9)))
   invert      = int(kwargs.get("invert",0))
+  
+  print("preparing data for channel {:d}".format(trace))
   
   
   xdata = xdata*xscale + delay

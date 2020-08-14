@@ -10,8 +10,17 @@ import sys
 import os
 
 
-# use Nuno's PyPi module
-from PyLTSpice.LTSpice_RawRead import RawRead
+### suppress STDOUT in this try except block
+old_stdout = sys.stdout
+sys.stdout = open(os.devnull, "w")
+try:
+  # use Nuno's PyPi module
+  from PyLTSpice.LTSpice_RawRead import RawRead
+except:
+  raise NameError("pyltspice module not found. :/\nplease install the pyltspice module via pip\n  sudo pip3 install pyltspice")
+finally:
+  sys.stdout.close()
+  sys.stdout = old_stdout
 
 
 
@@ -96,13 +105,28 @@ def send_ltspice(**kwargs):
       for trace in multichan_dic.keys():
       
         signal = multichan_dic[trace]
-        IR1 = ltr.get_trace(signal)
-        x = ltr.get_trace("time") 
-                                                                              
-        #  #### the abs() is a quick and dirty fix for some strange sign decoding errors
-        xdata = abs(x.get_wave(0))
-        ydata = IR1.get_wave(0)
         
+        print("read LTSpice signal \"{}\"...".format(signal))
+        
+        
+        ### suppress STDOUT in this try except block
+        old_stdout = sys.stdout
+        sys.stdout = open(os.devnull, "w")
+        try:
+          IR1 = ltr.get_trace(signal)
+          x = ltr.get_trace("time") 
+                                                                                
+          #  #### the abs() is a quick and dirty fix for some strange sign decoding errors
+          xdata = abs(x.get_wave(0))
+          ydata = IR1.get_wave(0)
+        except:
+          raise NameError("sth went wrong ... apparently I can't find signal \"{}\" in binary file \"{}\"".format(signal,my_file))
+        finally:
+          sys.stdout.close()
+          sys.stdout = old_stdout
+          
+       
+        print("success!")
         
         awg.program_trace( xdata, ydata, 
                            trace       = trace,
