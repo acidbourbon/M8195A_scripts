@@ -48,6 +48,12 @@ def send_ltspice(**kwargs):
   signal4     = str(kwargs.get("signal4",""))
 
   watch_changes  = int(kwargs.get("watch_changes",0))
+  
+  
+  
+  
+  
+  
 
   multichan_dic = {}
 
@@ -71,9 +77,6 @@ def send_ltspice(**kwargs):
     exit()
 
 
-  if ((sample_rate < 53.76e9) or (sample_rate > 65e9)):
-    print('sample rate must be >=53.76e9 and <= 65.0e9')
-    exit()
 
   
   if (my_file == ""):
@@ -86,10 +89,11 @@ def send_ltspice(**kwargs):
 
 
   last_mod_date = 0
-  # get raw file modification date
 
   loop_cntr = 0
   while(1):
+    
+    # get .raw file modification date
     mod_date = os.path.getmtime(my_file)
 
     if ( mod_date != last_mod_date):

@@ -111,6 +111,9 @@ def set_sample_rate(sample_rate):
     raise NameError("there is no running communication session with AWG!")
   session = local_objects["session"]
   
+  if ((sample_rate < 53.76e9) or (sample_rate > 65e9)):
+    raise NameError('sample rate must be >=53.76e9 and <= 65.0e9')
+  
   print("attempting to set sample rate : {:f} Hz".format(sample_rate))
   
   sock.SCPI_sock_send(session,":INIT:IMM")
