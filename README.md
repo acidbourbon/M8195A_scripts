@@ -127,8 +127,11 @@ example usage:
   watch_changes=1
 ```
 
-- if watch_changes is set to 1, then script will not terminate but continue watching the .raw file for changes.
-if a change is detected, the AWG will be re-programmed automatically.
+- If watch_changes is set to 1, then script will not terminate but continue watching the .raw file for changes.
+If a change is detected, the AWG will be re-programmed automatically.
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/watch_changes.png)
+
 
 ## Acknowledgements
 
