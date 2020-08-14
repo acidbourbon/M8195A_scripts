@@ -1,13 +1,10 @@
 # M8195A_scripts
 
 ## Dependencies
-python3
-
-numpy
-
-scipy
-
-pyltspice
+- python3
+- numpy
+- scipy
+- pyltspice
 
 ```
 # install all dependencies
@@ -17,7 +14,7 @@ sudo pip3 install numpy scipy pyltspice
 
 ## pulser.py
 
-generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
+- generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser.png)
 
@@ -42,15 +39,11 @@ ip=192.168.0.203
 
 ## send_csv.py
 
-read in two column csv file and send it to the AWG
-
-first column is time in seconds
-
-second column is voltage in volts
-
-standard delimiter is "," but can be adjusted (see below)
-
-waveform is resampled/interpolated, so time steps can be arbitrary
+- read in two column csv file and send it to the AWG
+- first column is time in seconds
+- second column is voltage in volts
+- standard delimiter is "," but can be adjusted (see below)
+- waveform is resampled/interpolated, so time steps can be arbitrary
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/send_csv.png)
 
@@ -77,11 +70,9 @@ ip=192.168.0.203
 
 ### single channel example
 
-read in LTSpice .raw file (binary simulation output file, containing all voltages and currents)
-
-waveform is resampled/interpolated and then sent to AWG
-
-example circuit - models a typical PMT signal
+- read in LTSpice .raw file (binary simulation output file, containing all voltages and currents)
+- waveform is resampled/interpolated and then sent to AWG
+- example circuit - models a typical PMT signal
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_asc.png)
 
