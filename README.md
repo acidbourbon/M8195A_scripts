@@ -75,6 +75,8 @@ ip=192.168.0.203
 
 ## send_ltspice.py
 
+### single channel example
+
 read in LTSpice .raw file (binary simulation output file, containing all voltages and currents)
 
 waveform is resampled/interpolated and then sent to AWG
@@ -104,4 +106,22 @@ yscale=1
 ip=192.168.0.203
 ```
 
+### multi channel example
+
+example circuit - four different uses of the LTSpice voltage source
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_asc.png)
+example circuit simulated waveforms
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_raw.png)
+measured waveforms from AWG
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_scope.png)
+
+example usage:
+```
+./send_ltspice.py file=ltspice_example/example_multichan.raw signal1="V(out1)" signal2="V(out2)" signal3="V(out3)" signal4="V(out4)"
+```
+
+## Acknowledgements
+
 Thanks to Nuno Brum for the beautiful LTSpice RawReader module!
+https://pypi.org/project/PyLTSpice/
+
