@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import M8195A as awg
-from M8195A import spice_float
+from M8195A import spice_float as float
 
 import SCPI_socket as sock
 from time import sleep
@@ -21,6 +21,7 @@ except:
 finally:
   sys.stdout.close()
   sys.stdout = old_stdout
+### end of STDOUT suppression
 
 
 
@@ -30,15 +31,15 @@ def send_ltspice(**kwargs):
   signal      = str(kwargs.get("signal",""))
 
   trace       = int(kwargs.get("trace",1))
-  idle_val    = spice_float(kwargs.get("idle_val",0))
-  yscale      = spice_float(kwargs.get("yscale",1))
-  xscale      = spice_float(kwargs.get("xscale",1))
-  delay       = spice_float(kwargs.get("delay",0e-9))
-  sample_rate = int(spice_float(kwargs.get("sample_rate",65e9)))
+  idle_val    = float(kwargs.get("idle_val",0))
+  yscale      = float(kwargs.get("yscale",1))
+  xscale      = float(kwargs.get("xscale",1))
+  delay       = float(kwargs.get("delay",0e-9))
+  sample_rate = int(float(kwargs.get("sample_rate",65e9)))
   invert      = int(kwargs.get("invert",0))
   ip          = str(kwargs.get("ip","192.168.0.203"))
   
-  period      = spice_float(kwargs.get("period",0))
+  period      = float(kwargs.get("period",0))
 
 
   signal1     = str(kwargs.get("signal1",""))
@@ -107,7 +108,8 @@ def send_ltspice(**kwargs):
         ltr = RawRead(my_file)
       except:
         raise NameError("sth went wrong while reading LTSpice binary file \"{}\"".format(my_file))
-      print("success!")
+      finally:
+        print("success!")
         
       for trace in multichan_dic.keys():
       
