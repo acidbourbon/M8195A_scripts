@@ -28,6 +28,14 @@ This is easily facilitated by creating a Desktop shortcut to the software and ed
 Then start the software via this shortcut.
 
 
+The below scripts have been written and tested on a Linux machine which is in the same
+network as the Windows machine running the "Soft Front Panel" software.
+The scripts *might* work within a Windows python3 environment. *Might*.
+
+LTSpice, a Windows application,
+runs perfectly fine on Linux via WINE. 
+(http://ltspice.analog.com/software/LTspiceXVII.exe)
+
 ## pulser.py
 
 - generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
