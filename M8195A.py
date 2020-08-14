@@ -131,6 +131,11 @@ def program_trace(xdata,ydata,**kwargs):
     raise NameError("there is no running communication session with AWG!")
   session = local_objects["session"]
   
+  
+  MAX_MEM_SIZE = 262144
+  
+  mem_size     = MAX_MEM_SIZE
+  
   trace       = int(kwargs.get("trace",1))
   idle_val    = float(kwargs.get("idle_val",0))
   yscale      = float(kwargs.get("yscale",1))
@@ -138,6 +143,11 @@ def program_trace(xdata,ydata,**kwargs):
   delay       = float(kwargs.get("delay",0e-9))
   sample_rate = int(float(kwargs.get("sample_rate",65e9)))
   invert      = int(kwargs.get("invert",0))
+  period      = float(kwargs.get("period",0))
+  
+  if(period != 0):
+    mem_size = int(period * sample_rate)
+    mem_size = np.min([mem_size,MAX_MEM_SIZE])
   
   print("preparing data for channel {:d}".format(trace))
   
@@ -196,9 +206,9 @@ def program_trace(xdata,ydata,**kwargs):
   cmdString = ":TRAC{:d}:DATA 1,{:d},{}".format(trace,n_offset,dataString)
   
   
-  print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
+  #print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
   sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
-  sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,262144,{:d}".format(trace,idle_val_dac))
+  sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,{:d},{:d}".format(trace,mem_size,idle_val_dac))
   
   #send data
   print("sending data ...")

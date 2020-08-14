@@ -37,6 +37,8 @@ def send_ltspice(**kwargs):
   sample_rate = int(spice_float(kwargs.get("sample_rate",65e9)))
   invert      = int(kwargs.get("invert",0))
   ip          = str(kwargs.get("ip","192.168.0.203"))
+  
+  period      = spice_float(kwargs.get("period",0))
 
 
   signal1     = str(kwargs.get("signal1",""))
@@ -136,6 +138,7 @@ def send_ltspice(**kwargs):
                            delay       = delay,
                            invert      = invert,
                            sample_rate = sample_rate,
+                           period      = period
                         )
 
 
