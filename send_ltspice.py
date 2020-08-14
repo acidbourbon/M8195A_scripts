@@ -102,7 +102,12 @@ def send_ltspice(**kwargs):
 
       awg.set_sample_rate(sample_rate)
 
-      ltr = RawRead(my_file)
+      print("read LTSpice binary file \"{}\"".format(my_file))
+      try:
+        ltr = RawRead(my_file)
+      except:
+        raise NameError("sth went wrong while reading LTSpice binary file \"{}\"".format(my_file))
+      print("success!")
         
       for trace in multichan_dic.keys():
       
