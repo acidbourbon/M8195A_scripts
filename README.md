@@ -109,6 +109,7 @@ delay=0e-9
 xscale=1
 yscale=1
 ip=192.168.0.203
+watch_changes=0
 ```
 
 ### multi channel example
@@ -131,8 +132,12 @@ example usage:
   signal1="V(out1)" \
   signal2="V(out2)" \
   signal3="V(out3)" \
-  signal4="V(out4)"
+  signal4="V(out4)" \
+  watch_changes=1
 ```
+
+- if watch_changes is set to 1, then script will not terminate but continue watching the .raw file for changes.
+if a change is detected, the AWG will be re-programmed automatically.
 
 ## Acknowledgements
 
