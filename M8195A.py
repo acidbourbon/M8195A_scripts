@@ -17,6 +17,42 @@ from scipy import interpolate
 local_objects = {}
 
 
+def spice_float(argument):
+   
+  if( isinstance(argument,str)):
+   
+    expr = argument
+    if("p" in expr):
+      expr = expr.replace("p","e-12")
+    elif("n" in expr):
+      expr = expr.replace("n","e-9")
+    elif("u" in expr):
+      expr = expr.replace("u","e-6")
+    elif("m" in expr):
+      expr = expr.replace("m","e-3")
+    elif("k" in expr):
+      expr = expr.replace("k","e3")
+    elif("Meg" in expr):
+      expr = expr.replace("Meg","e6")
+    elif("M" in expr):
+      expr = expr.replace("M","e6")
+    elif("G" in expr):
+      expr = expr.replace("G","e9")
+    elif("T" in expr):
+      expr = expr.replace("T","e12")
+      
+    try:
+      number = float(expr)
+    except:
+      raise NameError("cannot convert \"{}\" to a reasonable number".format(argument))
+  else:
+    number = float(argument)
+  
+  return number
+
+
+
+
 def resample(target_x,data_x,data_y,**kwargs):
   fill_value = float(kwargs.get("fill_value",0.))
   f = interpolate.interp1d(data_x,data_y,bounds_error=False, fill_value=fill_value)
@@ -84,9 +120,89 @@ def set_sample_rate(sample_rate):
   sock.SCPI_sock_send(session,":ABOR")
   
   
-def program_trace(**kwargs):
+def program_trace(xdata,ydata,**kwargs):
   if (not("session" in local_objects.keys())):
     raise NameError("there is no running communication session with AWG!")
   session = local_objects["session"]
+  
+  
+  
+  trace       = int(kwargs.get("trace",1))
+  idle_val    = float(kwargs.get("idle_val",0))
+  yscale      = float(kwargs.get("yscale",1))
+  xscale      = float(kwargs.get("xscale",1))
+  delay       = float(kwargs.get("delay",0e-9))
+  sample_rate = int(float(kwargs.get("sample_rate",65e9)))
+  invert      = int(kwargs.get("invert",0))
+  
+  
+  xdata = xdata*xscale + delay
+
+  width = xdata[-1]
+
+  ydata = ydata*yscale
+
+
+  target_x = np.arange(0,width,1./sample_rate)
+  target_x , target_y = resample(target_x,xdata,ydata,fill_value=idle_val)
+  
+
+  if( np.max(np.abs(target_y)) > 0.5):
+    print("############################################")
+    print("## WARNING: Waveform on ch {:d} will clip!!! ##".format(trace))
+    print("############################################")
+
+  # clip to allowed value range
+  target_y[target_y > 0.5] = 0.5
+  target_y[target_y < -0.5] = -0.5
+
+
+  #volt        = float(kwargs.get("volt",0.5))
+  offset = 0
+  volt = np.max(np.abs(target_y))
+  idle_val = idle_val/volt
+  target_y = target_y*127./volt
+  volt = volt*2
+
+  if(invert):
+    idle_val = -idle_val
+    target_y = -target_y
+
+
+  idle_val_dac = int(idle_val*127)
+
+  #n_delay = int(delay*sample_rate) 
+  n_offset = int(offset*sample_rate) 
+  n = int(len(target_x))
+  
+  # sample len must be a multiple of 128
+  sample_len = np.max([int((n)/128+1)*128,128]) # multiples of 128
+  #print("sample len :{:d}".format(sample_len))
+  
+  #dataList = [-100 for i in range(sample_len)]
+  
+  dataList = idle_val_dac*np.ones(sample_len)
+  
+  dataList[0:n] = target_y
+  dataList = dataList.astype(np.int).tolist()
+  
+  dataString = ",".join(map(str,dataList))
+  cmdString = ":TRAC{:d}:DATA 1,{:d},{}".format(trace,n_offset,dataString)
+  
+  
+  print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
+  sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
+  sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,262144,{:d}".format(trace,idle_val_dac))
+  
+  #send data
+  print("sending data ...")
+  sock.SCPI_sock_send(session,cmdString)
+  #print(sock.SCPI_sock_query(session,":TRAC1:DATA? 1,0,512"))
+
+  print("set output voltage ...")
+  sock.SCPI_sock_send(session,":VOLT{:d} {:3.3f}".format(trace,volt))
+
+  print("Output {:d} on ...".format(trace))
+  sock.SCPI_sock_send(session,":OUTP{:d} ON".format(trace))
   
   
