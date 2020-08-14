@@ -101,13 +101,7 @@ def send_ltspice(**kwargs):
 
       session = awg.open_session(ip)
 
-      sock.SCPI_sock_send(session,":INIT:IMM")
-      print("sample rate (Hz):")
-      sock.SCPI_sock_send(session,":SOUR:FREQ:RAST {:d}".format(int(sample_rate)))
-      print(sock.SCPI_sock_query(session,":SOUR:FREQ:RAST?"))
-      
-      sock.SCPI_sock_send(session,":ABOR")
-
+      awg.set_sample_rate(sample_rate)
 
       ltr = RawRead(my_file)
         
@@ -131,6 +125,7 @@ def send_ltspice(**kwargs):
 
         target_x = np.arange(0,width,1./sample_rate)
         target_x , target_y = awg.resample(target_x,xdata,ydata,fill_value=idle_val)
+        
 
         if( np.max(np.abs(target_y)) > 0.5):
           print("############################################")

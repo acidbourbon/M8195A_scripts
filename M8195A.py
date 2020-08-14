@@ -44,7 +44,23 @@ def open_session(ip):
 
 
 def close_session():
+  if (not("session" in local_objects.keys())):
+    raise NameError("there is no running communication session with AWG!")
+  session = local_objects["session"]
   print("close socket")
-  sock.SCPI_sock_close(local_objects["session"])
+  sock.SCPI_sock_close(session)
   
+ 
+ 
+def set_sample_rate(sample_rate):
+  if (not("session" in local_objects.keys())):
+    raise NameError("there is no running communication session with AWG!")
+  session = local_objects["session"]
   
+  print("set sample rate : {:f} Hz".format(sample_rate))
+  
+  sock.SCPI_sock_send(session,":INIT:IMM")
+  sock.SCPI_sock_send(session,":SOUR:FREQ:RAST {:d}".format(int(sample_rate)))
+  print("read back sample rate (Hz):")
+  print(sock.SCPI_sock_query(session,":SOUR:FREQ:RAST?"))
+  sock.SCPI_sock_send(session,":ABOR")
