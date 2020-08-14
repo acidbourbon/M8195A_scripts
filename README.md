@@ -72,11 +72,12 @@ ip=192.168.0.203
 
 - read in LTSpice .raw file (binary simulation output file, containing all voltages and currents)
 - waveform is resampled/interpolated and then sent to AWG
-- example circuit - models a typical PMT signal
+
+example circuit - models a typical PMT signal
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_asc.png)
 
-example circuit simulated waveform
+example circuit - simulated waveform
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/spice_raw.png)
 
@@ -115,7 +116,7 @@ example circuit simulated waveforms
 
 measured waveforms from AWG
 
-![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_scope.png)
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/multichan_scope_zoom.png)
 
 example usage:
 ```
