@@ -187,8 +187,7 @@ def send_ltspice(**kwargs):
 
       # done with individual trace stuff
 
-      print("run!")
-      sock.SCPI_sock_send(session,":INIT:IMM")
+      awg.run()
       
       #sock.SCPI_sock_close(session)
       awg.close_session()
