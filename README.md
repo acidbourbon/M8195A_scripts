@@ -12,6 +12,22 @@
 sudo pip3 install numpy scipy pyltspice
 ```
 
+## Prerequisites
+
+The Keysight M8195 consists of two parts: The hardware and the "Soft Front Panel" software.
+This collection of scripts talks DOES NOT talk to the hardware directly (because the hardware is dumb),
+but to the "Soft Front Panel", which provides the SCPI interface to the instrument as a whole.
+
+The SCPI interface IS NOT running by default. "Soft Front Panel" needs to be started with command line
+argument "/Socket 2025" in order for our scripts to work.
+
+This is easily facilitated by creating a Desktop shortcut to the software and editing it, as shown below:
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/soft_front_panel_arguments.png)
+
+Then start the software via this shortcut.
+
+
 ## pulser.py
 
 - generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
