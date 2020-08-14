@@ -1,24 +1,17 @@
 #!/usr/bin/env python3
+
+import M8195A as awg
+
 import SCPI_socket as sock
-import struct
 from time import sleep
 import numpy as np
 import sys
 import os
 import datetime
 
-from scipy import interpolate
 
 # use Nuno's PyPi module
 from PyLTSpice.LTSpice_RawRead import RawRead
-
-def resample(target_x,data_x,data_y,**kwargs):
-  fill_value = float(kwargs.get("fill_value",0.))
-  f = interpolate.interp1d(data_x,data_y,bounds_error=False, fill_value=fill_value)
-  out_x = target_x
-  out_y = f(target_x)
-  return (out_x,out_y)
-
 
 
 
@@ -105,17 +98,8 @@ def send_ltspice(**kwargs):
 
       last_mod_date = mod_date
 
-      # Open socket, create waveform, send data, read back and close socket
-      print("connect to device ...")
-      session = sock.SCPI_sock_connect(ip)
-      print("*IDN?")
-      idn_str = sock.SCPI_sock_query(session,"*idn?")
-      print(idn_str)
-      if ( "Keysight Technologies,M8195A" in idn_str):
-        print("success!")
-      else:
-        sock.SCPI_sock_close(session)
-        raise NameError("could not communicate with device, or not a Keysight Technologies,M8195A")
+
+      session = awg.open_session(ip)
 
       sock.SCPI_sock_send(session,":INIT:IMM")
       print("sample rate (Hz):")
@@ -146,7 +130,7 @@ def send_ltspice(**kwargs):
 
 
         target_x = np.arange(0,width,1./sample_rate)
-        target_x , target_y = resample(target_x,xdata,ydata,fill_value=idle_val)
+        target_x , target_y = awg.resample(target_x,xdata,ydata,fill_value=idle_val)
 
         if( np.max(np.abs(target_y)) > 0.5):
           print("############################################")
@@ -210,8 +194,9 @@ def send_ltspice(**kwargs):
 
       print("run!")
       sock.SCPI_sock_send(session,":INIT:IMM")
-      print("close socket")
-      sock.SCPI_sock_close(session)
+      
+      #sock.SCPI_sock_close(session)
+      awg.close_session()
 
       if (watch_changes == 0):
         break
