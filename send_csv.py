@@ -27,6 +27,7 @@ def send_csv(**kwargs):
   period      = float(kwargs.get("period",0))
 
 
+  tcol       = int(kwargs.get("tcol","0"))
   ycol       = str(kwargs.get("ycol","1"))
   ch1col     = str(kwargs.get("ch1col",""))
   ch2col     = str(kwargs.get("ch2col",""))
@@ -107,9 +108,10 @@ def send_csv(**kwargs):
       for trace in multichan_dic.keys():
       
         ch_data_col = multichan_dic[trace]
+        print("time data is in csv col {:d}".format(tcol))
         print("ch{:d} data is in csv col {:d}".format(trace,ch_data_col))
         
-        xdata = data[:,0]*xscale
+        xdata = data[:,tcol]*xscale
         xdata += delay
       
         ydata = data[:,ch_data_col]*yscale

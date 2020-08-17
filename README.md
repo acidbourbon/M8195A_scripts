@@ -75,6 +75,18 @@ example usage:
 ```
 ./send_csv.py file=waveform.csv trace=1 
 ./send_csv.py file=waveform.csv trace=2 delay=10e-9 invert=1 yscale=0.5 xscale=0.3
+
+# get trace data from another column of CSV file
+./send_csv.py file=waveform.csv trace=1 tcol=2 ycol=5
+
+# program multiple channels from different columns in same CSV file, watch csv file for changes
+./send_csv.py file=waveform.csv \
+  tcol=0 \
+  ch1col=1 \
+  ch2col=2 \
+  ch3col=3 \
+  ch4col=4 \
+  watch_changes=1
 ```
 optional parameters/standard values:
 ```
@@ -88,7 +100,19 @@ delay=0e-9
 xscale=1
 yscale=1
 ip=192.168.0.203
+watch_changes=0
+tcol=0
+ycol=1
+ch1col=""
+ch2col=""
+ch3col=""
+ch4col=""
 ```
+
+- If watch_changes is set to 1, then script will not terminate but continue watching the CSV file for changes.
+If a change is detected, the AWG will be re-programmed automatically.
+
+
 
 ## send_ltspice.py
 
