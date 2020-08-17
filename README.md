@@ -46,7 +46,7 @@ runs perfectly fine on Linux via WINE.
 example usage:
 ```
 ./pulser.py width=50e-9 trace=1 on_val=0.5 idle_val=0
-./pulser.py width=30e-9 trace=2 on_val=-0.3 idle_val=0.1 delay=10e-9
+./pulser.py width=30n trace=2 on_val=-300m idle_val=100m delay=10n
 ```
 
 optional parameters/standard values:
@@ -56,8 +56,8 @@ invert=0
 on_val=0.5
 idle_val=0
 trace=1
-width=50e-9
-delay=0e-9
+width=50n
+delay=0n
 ip=192.168.0.203
 ```
 
@@ -74,7 +74,7 @@ ip=192.168.0.203
 example usage:
 ```
 ./send_csv.py file=waveform.csv trace=1 
-./send_csv.py file=waveform.csv trace=2 delay=10e-9 invert=1 yscale=0.5 xscale=0.3
+./send_csv.py file=waveform.csv trace=2 delay=10n invert=1 yscale=0.5 xscale=0.3
 
 # get trace data from another column of CSV file
 ./send_csv.py file=waveform.csv trace=1 tcol=2 ycol=5
@@ -96,7 +96,7 @@ sample_rate=65e9
 invert=0
 idle_val=0
 trace=1
-delay=0e-9
+delay=0
 xscale=1
 yscale=1
 ip=192.168.0.203
