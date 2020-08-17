@@ -73,6 +73,7 @@ xscale=1
 yscale=1
 ```
 
+- if leading and trailing edge are set to macroscopic values, the width is defined between the 50% points
 - time and voltage definitions can be given with numeric postfixes, i.e. n=1e-9 p=1e-12 m=1e-3, etc ...
 
 ## send_csv.py
