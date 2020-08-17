@@ -3,7 +3,6 @@
 import M8195A as awg
 from M8195A import spice_float as float
 
-import SCPI_socket as sock
 from time import sleep
 import numpy as np
 import sys
