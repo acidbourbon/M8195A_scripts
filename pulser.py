@@ -21,9 +21,35 @@ def pulser(**kwargs):
   period      = float(kwargs.get("period",0))
   yscale      = float(kwargs.get("yscale",1))
   xscale      = float(kwargs.get("xscale",1))
+  
+  leading_edge   = float(kwargs.get("leading_edge",0))
+  trailing_edge  = float(kwargs.get("trailing_edge",0))
 
-  xdata = np.arange(0,width,1./sample_rate)
-  ydata = np.ones(len(xdata))*on_val
+  
+  
+  #xdata = np.arange(0,width,1./sample_rate)
+  #ydata = np.ones(len(xdata))*on_val
+  
+  delay += leading_edge/2
+  
+  xlist = []
+  ylist = []
+  
+  xlist += [-leading_edge/2]
+  ylist += [idle_val]
+  
+  xlist += [leading_edge/2]
+  ylist += [on_val]
+  
+  xlist += [width - trailing_edge/2]
+  ylist += [on_val]
+  
+  xlist += [width + trailing_edge/2]
+  ylist += [idle_val]
+  
+  
+  xdata = np.array(xlist)
+  ydata = np.array(ylist)
   
   session = awg.open_session(ip)
 

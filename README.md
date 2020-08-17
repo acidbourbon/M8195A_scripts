@@ -40,13 +40,23 @@ runs perfectly fine on Linux via WINE.
 
 - generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
 
-![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser.png)
-
 
 example usage:
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser.png)
+
 ```
 ./pulser.py width=50e-9 trace=1 on_val=0.5 idle_val=0
 ./pulser.py width=30n trace=2 on_val=-300m idle_val=100m delay=10n
+
+```
+
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser2.png)
+
+```
+./pulser.py trace=2 width=10n leading_edge=2n trailing_edge=10n delay=5n on_val=500m
+./pulser.py trace=3 width=10n leading_edge=2.5n trailing_edge=1n delay=15n on_val=-400m
 ```
 
 optional parameters/standard values:
@@ -59,7 +69,11 @@ trace=1
 width=50n
 delay=0n
 ip=192.168.0.203
+xscale=1
+yscale=1
 ```
+
+- time and voltage definitions can be given with numeric postfixes, i.e. n=1e-9 p=1e-12 m=1e-3, etc ...
 
 ## send_csv.py
 
