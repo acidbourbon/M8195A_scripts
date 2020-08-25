@@ -53,6 +53,12 @@ def spice_float(argument):
 
 
 
+
+
+
+  
+
+
 def resample(target_x,data_x,data_y,**kwargs):
   fill_value = float(kwargs.get("fill_value",0.))
   f = interpolate.interp1d(data_x,data_y,bounds_error=False, fill_value=fill_value)
@@ -127,7 +133,9 @@ def set_sample_rate(sample_rate):
   else:
     raise NameError("could not set desired sample rate!")
   
-  
+
+def next_int_mult_128(n):
+  return np.max([int((n)/128+1)*128,128]) # multiples of 128
   
 def program_trace(xdata,ydata,**kwargs):
   if (not("session" in local_objects.keys())):
@@ -149,7 +157,7 @@ def program_trace(xdata,ydata,**kwargs):
   period      = float(kwargs.get("period",0))
   
   if(period != 0):
-    mem_size = int(period * sample_rate)
+    mem_size = next_int_mult_128(int(period * sample_rate))
     mem_size = np.min([mem_size,MAX_MEM_SIZE])
   
   print("preparing data for channel {:d}".format(trace))
@@ -195,7 +203,8 @@ def program_trace(xdata,ydata,**kwargs):
   n = int(len(target_x))
   
   # sample len must be a multiple of 128
-  sample_len = np.max([int((n)/128+1)*128,128]) # multiples of 128
+  sample_len = next_int_mult_128(n)
+  sample_len = np.min([sample_len,MAX_MEM_SIZE])
   #print("sample len :{:d}".format(sample_len))
   
   #dataList = [-100 for i in range(sample_len)]
@@ -209,9 +218,22 @@ def program_trace(xdata,ydata,**kwargs):
   cmdString = ":TRAC{:d}:DATA 1,{:d},{}".format(trace,n_offset,dataString)
   
   
+  
   #print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
   sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
   sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,{:d},{:d}".format(trace,mem_size,idle_val_dac))
+  
+  #delete all traces with wrong mem_size
+  for i in range(1,5):
+    cat_answer = sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(i))
+    cat_answer.replace("\n","")
+    cat_answer.replace("\r","")
+    cat_answer.replace(" ","")
+    #print(cat_answer)
+    if( (cat_answer != "1,{:d}".format(mem_size))  and (cat_answer != "0,0" )): 
+      print("delete trace {:d}, because wrong mem size / wrong period".format(i))
+      sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(i))
+  
   
   #send data
   print("sending data ...")

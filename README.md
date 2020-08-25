@@ -30,7 +30,7 @@ Then start the software via this shortcut.
 
 The below scripts have been written and tested on a Linux machine which is in the same
 network as the Windows machine running the "Soft Front Panel" software.
-The scripts *might* work within a Windows python3 environment. *Might*.
+The scripts have also been proven to work on a windows machine with the IDLE Python3 release for Windows.
 
 LTSpice, a Windows application,
 runs perfectly fine on Linux via WINE. 
