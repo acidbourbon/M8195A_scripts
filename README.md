@@ -100,6 +100,15 @@ example usage:
 ./send_csv.py file=waveform.csv trace=1 
 ./send_csv.py file=waveform.csv trace=2 delay=10n invert=1 yscale=0.5 xscale=0.3
 
+```
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/csv_period.png)
+```
+./send_csv.py file=waveform.csv trace=1 period=80n
+```
+
+
+```
 # get trace data from another column of CSV file
 ./send_csv.py file=waveform.csv trace=1 tcol=2 ycol=5
 
