@@ -93,9 +93,11 @@ yscale=1
 - standard delimiter is "," but can be adjusted (see below)
 - waveform is resampled/interpolated, so time steps can be arbitrary
 
-![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/send_csv.png)
 
 example usage:
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/send_csv.png)
+
 ```
 ./send_csv.py file=waveform.csv trace=1 
 ./send_csv.py file=waveform.csv trace=2 delay=10n invert=1 yscale=0.5 xscale=0.3
