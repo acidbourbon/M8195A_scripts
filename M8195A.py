@@ -231,7 +231,9 @@ def program_trace(xdata,ydata,**kwargs):
   
   dataList = idle_val_dac*np.ones(sample_len)
   
-  dataList[0:n] = target_y
+  n_ = np.min([n,sample_len])
+  
+  dataList[0:n_] = target_y[0:n_]
   dataList = dataList.astype(np.int).tolist()
   
   dataString = ",".join(map(str,dataList))
