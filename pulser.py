@@ -53,7 +53,6 @@ def pulser(**kwargs):
   
   session = awg.open_session(ip)
 
-  awg.set_sample_rate(sample_rate)
   
   awg.program_trace( xdata, ydata, 
                      trace       = trace,

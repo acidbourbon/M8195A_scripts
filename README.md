@@ -59,9 +59,18 @@ example usage:
 ./pulser.py trace=3 width=10n leading_edge=2.5n trailing_edge=1n delay=15n on_val=-400m
 ```
 
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser_period.png)
+
+```
+./pulser.py trace=1 width=10n period=50n
+```
+- if no "period=" argument is given, the AWG will use its maximum memory depth, resulting
+in the maximum sample length of circa 4us (at maximum sampling rate = 65GHz).
+
 optional parameters/standard values:
 ```
 sample_rate=65e9
+period=0
 invert=0
 on_val=0.5
 idle_val=0
@@ -108,6 +117,7 @@ optional parameters/standard values:
 file=<none>
 delimiter=","
 sample_rate=65e9
+period=0
 invert=0
 idle_val=0
 trace=1
@@ -156,6 +166,7 @@ optional parameters/standard values:
 ```
 file=<none>
 sample_rate=65e9
+period=0
 signal="V(output)"
 invert=0
 idle_val=0

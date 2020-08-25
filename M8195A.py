@@ -136,6 +136,11 @@ def set_sample_rate(sample_rate):
 
 def next_int_mult_128(n):
   return np.max([int((n)/128+1)*128,128]) # multiples of 128
+
+
+def prev_int_mult_128(n):
+  return np.max([int((n)/128)*128,128]) # multiples of 128
+
   
 def program_trace(xdata,ydata,**kwargs):
   if (not("session" in local_objects.keys())):
@@ -157,8 +162,23 @@ def program_trace(xdata,ydata,**kwargs):
   period      = float(kwargs.get("period",0))
   
   if(period != 0):
-    mem_size = next_int_mult_128(int(period * sample_rate))
+    #mem_size = next_int_mult_128(int(period * sample_rate))
+    #mem_size = np.min([mem_size,MAX_MEM_SIZE])
+    
+    print("NOTE: overriding sample rate to match desired period!")
+    
+    sample_rate = 65e9
+
+    mem_size = prev_int_mult_128(int(period * sample_rate))
     mem_size = np.min([mem_size,MAX_MEM_SIZE])
+    hypothetical_period = 1/sample_rate*mem_size
+    rate_scaler = hypothetical_period/period
+    
+    sample_rate *= rate_scaler
+    sample_rate = int(sample_rate)
+    
+    
+  set_sample_rate(sample_rate)
   
   print("preparing data for channel {:d}".format(trace))
   
@@ -204,7 +224,7 @@ def program_trace(xdata,ydata,**kwargs):
   
   # sample len must be a multiple of 128
   sample_len = next_int_mult_128(n)
-  sample_len = np.min([sample_len,MAX_MEM_SIZE])
+  sample_len = np.min([sample_len,mem_size])
   #print("sample len :{:d}".format(sample_len))
   
   #dataList = [-100 for i in range(sample_len)]

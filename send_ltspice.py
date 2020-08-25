@@ -104,8 +104,6 @@ def send_ltspice(**kwargs):
 
       session = awg.open_session(ip)
 
-      awg.set_sample_rate(sample_rate)
-
       print("read LTSpice binary file \"{}\"".format(my_file))
       try:
         ltr = RawRead(my_file)

@@ -94,7 +94,6 @@ def send_csv(**kwargs):
 
       session = awg.open_session(ip)
 
-      awg.set_sample_rate(sample_rate)
 
       print("read csv file \"{}\"".format(my_file))
       try:
