@@ -48,7 +48,7 @@ def SCPI_sock_query(session,command,error_check=False):
         command -> text containing an instrument command
         error_check -> optional -> Check for instrument errors (default False)"""
     
-    session.settimeout(2.0)
+    session.settimeout(4.0)
     try:
         session.sendall(str.encode(command + "\n"))
         response = getDataFromSocket(session)
