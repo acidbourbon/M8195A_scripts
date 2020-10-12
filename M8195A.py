@@ -207,6 +207,9 @@ def program_trace(xdata,ydata,**kwargs):
   #volt        = float(kwargs.get("volt",0.5))
   offset = 0
   volt = np.max(np.abs(target_y))
+  # +-100 mV is the smallest DAC range
+  if (volt < 0.1):
+    volt = 0.1
   idle_val = idle_val/volt
   target_y = target_y*127./volt
   volt = volt*2
