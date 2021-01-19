@@ -14,9 +14,13 @@ sudo pip3 install numpy scipy pyltspice
 
 ## Prerequisites
 
+### The server on the windows machine
+
 The Keysight M8195 consists of two parts: The hardware and the "Soft Front Panel" software.
 This collection of scripts talks DOES NOT talk to the hardware directly (because the hardware is dumb),
 but to the "Soft Front Panel", which provides the SCPI interface to the instrument as a whole.
+
+"Soft Front Panel" must run on a Windows machine with its port number 2025 exposed to the network.
 
 The SCPI interface IS NOT running by default. "Soft Front Panel" needs to be started with command line
 argument "/Socket 2025" in order for our scripts to work.
@@ -26,15 +30,36 @@ This is easily facilitated by creating a Desktop shortcut to the software and ed
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/soft_front_panel_arguments.png)
 
 Then start the software via this shortcut.
+Congratulations, you now have a server running, that grants Linux and Windows machines in this network
+access to the M8295A signal generator.
 
+***
+
+### The clients on either Windows or Linux
 
 The below scripts have been written and tested on a Linux machine which is in the same
 network as the Windows machine running the "Soft Front Panel" software.
 The scripts have also been proven to work on a windows machine with the IDLE Python3 release for Windows.
 
+For the scripts to properly communicate with the server they need to be called with with the "ip" argument.
+The given ip is the ip of the windows server running "Soft Front Panel":
+```
+./pulser.py       ip=192.168.0.123 <further arguments>
+./send_csv.py     ip=192.168.0.123 <further arguments>
+./send_ltspice.py ip=192.168.0.123 <further arguments>
+```
+If you don't want to type the ip argument all the time, you can export the ip as an environment variable once:
+```
+export M8195A_ip=192.168.0.123
+```
+
+
 LTSpice, a Windows application,
 runs perfectly fine on Linux via WINE. 
 (http://ltspice.analog.com/software/LTspiceXVII.exe)
+
+***
+
 
 ## pulser.py
 

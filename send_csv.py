@@ -22,7 +22,12 @@ def send_csv(**kwargs):
   delay       = float(kwargs.get("delay",0e-9))
   sample_rate = int(float(kwargs.get("sample_rate",65e9)))
   invert      = int(kwargs.get("invert",0))
-  ip          = str(kwargs.get("ip","192.168.0.203"))
+  
+  ip = "192.168.0.203"
+  if(os.getenv('M8195A_IP')):
+    ip = os.getenv('M8195A_IP')
+  ip          = str(kwargs.get("ip",ip))
+  print("target ip : {}".format(ip))
   
   period      = float(kwargs.get("period",0))
 
