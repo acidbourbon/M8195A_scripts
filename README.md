@@ -31,7 +31,7 @@ This is easily facilitated by creating a Desktop shortcut to the software and ed
 
 Then start the software via this shortcut.
 Congratulations, you now have a server running, that grants Linux and Windows machines in this network
-access to the M8295A signal generator.
+access to the M8195A signal generator.
 
 ***
 
