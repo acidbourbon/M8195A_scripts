@@ -50,7 +50,7 @@ The given ip is the ip of the windows server running "Soft Front Panel":
 ```
 If you don't want to type the ip argument all the time, you can export the ip as an environment variable once:
 ```
-export M8195A_ip=192.168.0.123
+export M8195A_IP=192.168.0.123
 ```
 
 
