@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import SCPI_socket as sock
+#import SCPI_socket as sock
 
 
 
@@ -71,14 +71,14 @@ def open_session(ip):
   
   # Open socket, create waveform, send data, read back and close socket
   print("connect to device ...")
-  session = sock.SCPI_sock_connect(ip)
+  session = SCPI_sock_connect(ip)
   print("*IDN?")
-  idn_str = sock.SCPI_sock_query(session,"*idn?")
+  idn_str = SCPI_sock_query(session,"*idn?")
   print(idn_str)
   if ( "Keysight Technologies,M8195A" in idn_str):
     print("success!")
   else:
-    sock.SCPI_sock_close(session)
+    SCPI_sock_close(session)
     raise NameError("could not communicate with device, or not a Keysight Technologies,M8195A")
   local_objects["session"] = session
   return session
@@ -91,7 +91,7 @@ def close_session():
   session = local_objects["session"]
   
   print("close socket")
-  sock.SCPI_sock_close(session)
+  SCPI_sock_close(session)
   
   
 def run():
@@ -100,7 +100,7 @@ def run():
   session = local_objects["session"]
  
   print("RUN!")
-  sock.SCPI_sock_send(session,":INIT:IMM")
+  SCPI_sock_send(session,":INIT:IMM")
   
   
 def stop():
@@ -109,7 +109,7 @@ def stop():
   session = local_objects["session"]
  
   print("STOP!")
-  sock.SCPI_sock_send(session,":ABOR")
+  SCPI_sock_send(session,":ABOR")
   
  
 def set_sample_rate(sample_rate):
@@ -122,11 +122,11 @@ def set_sample_rate(sample_rate):
   
   print("attempting to set sample rate : {:f} Hz".format(sample_rate))
   
-  sock.SCPI_sock_send(session,":INIT:IMM")
-  sock.SCPI_sock_send(session,":SOUR:FREQ:RAST {:d}".format(int(sample_rate)))
+  SCPI_sock_send(session,":INIT:IMM")
+  SCPI_sock_send(session,":SOUR:FREQ:RAST {:d}".format(int(sample_rate)))
   #print("read back sample rate (Hz):")
-  read_back = sock.SCPI_sock_query(session,":SOUR:FREQ:RAST?")
-  sock.SCPI_sock_send(session,":ABOR")
+  read_back = SCPI_sock_query(session,":SOUR:FREQ:RAST?")
+  SCPI_sock_send(session,":ABOR")
   #print(read_back)
   if( float(read_back) == float(sample_rate)):
     print("success!")
@@ -244,31 +244,156 @@ def program_trace(xdata,ydata,**kwargs):
   
   
   
-  #print(sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
-  sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
-  sock.SCPI_sock_send(session,":TRAC{:d}:DEF 1,{:d},{:d}".format(trace,mem_size,idle_val_dac))
+  #print(SCPI_sock_query(session,":TRAC{:d}:CAT?".format(trace)))
+  SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(trace))
+  SCPI_sock_send(session,":TRAC{:d}:DEF 1,{:d},{:d}".format(trace,mem_size,idle_val_dac))
   
   #delete all traces with wrong mem_size
   for i in range(1,5):
-    cat_answer = sock.SCPI_sock_query(session,":TRAC{:d}:CAT?".format(i))
+    cat_answer = SCPI_sock_query(session,":TRAC{:d}:CAT?".format(i))
     cat_answer.replace("\n","")
     cat_answer.replace("\r","")
     cat_answer.replace(" ","")
     #print(cat_answer)
     if( (cat_answer != "1,{:d}".format(mem_size))  and (cat_answer != "0,0" )): 
       print("delete trace {:d}, because wrong mem size / wrong period".format(i))
-      sock.SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(i))
+      SCPI_sock_send(session,":TRAC{:d}:DEL:ALL".format(i))
   
   
   #send data
   print("sending data ...")
-  sock.SCPI_sock_send(session,cmdString)
-  #print(sock.SCPI_sock_query(session,":TRAC1:DATA? 1,0,512"))
+  SCPI_sock_send(session,cmdString)
+  #print(SCPI_sock_query(session,":TRAC1:DATA? 1,0,512"))
 
   print("set output voltage ...")
-  sock.SCPI_sock_send(session,":VOLT{:d} {:3.3f}".format(trace,volt))
+  SCPI_sock_send(session,":VOLT{:d} {:3.3f}".format(trace,volt))
 
   print("Output {:d} on ...".format(trace))
-  sock.SCPI_sock_send(session,":OUTP{:d} ON".format(trace))
+  SCPI_sock_send(session,":OUTP{:d} ON".format(trace))
+  
+  
+  
+  
+  
+##################################################
+##                 SCPI_socket                  ##
+##################################################
+
+
+# Python SCPI socket functions
+# This is not an official Keysight driver.  
+# Very limited testing has been done.
+# Feel free to modify this
+# Version 0.5 
+
+
+import socket
+
+def SCPI_sock_connect(ipaddress,port=5025):
+    """ Opens up a socket connection between an instrument and your PC
+        Returns the socket session
+
+        Arguments:
+        ipaddress -> ip address of the instrument
+        port -> optional -> socket port of the instrument (default 5025)"""
+
+    try:
+        session=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        #session.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 0)
+        #session.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, 0)
+        session.connect((ipaddress,port))
+    except IOError:
+        print( "Failed to connect to the instrument, pleace check your IP address" )
+        return
+    return session
+
+def SCPI_sock_send(session,command,error_check=False):
+    """Sends a command to an instrument
+
+        Arguments:
+        session -> TCPIP socket connection
+        command -> text containing an instrument command
+        error_check -> optional -> Check for instrument errors (default False)"""
+    
+    resp = " "
+    session.sendall(str.encode(command + "\n"))
+
+    if error_check==True:
+        err = get_error(session, command)        
+        
+def SCPI_sock_query(session,command,error_check=False):
+    """Sends a query to an instrument
+        Returns the query response
+        
+        Arguments:
+        session -> TCPIP socket connection
+        command -> text containing an instrument command
+        error_check -> optional -> Check for instrument errors (default False)"""
+    
+    session.settimeout(4.0)
+    try:
+        session.sendall(str.encode(command + "\n"))
+        response = getDataFromSocket(session)
+        if error_check==True:
+            err = get_error(session, command)
+            if err:
+                response = "<ERROR>"
+        return response
+        
+    except socket.timeout:
+        print( "Query error:" )
+        get_error(session, command)
+        response = "<ERROR>"
+        return response
+
+def SCPI_sock_close(session):
+    """Closes the socket connection
+
+        Argument:
+        session -> TCPIP socket connection"""
+    
+    session.close()
+
+def getDataFromSocket(session):
+    """Reads from a socket until a newline is read
+        Returns the data read
+
+        Argument:
+        session -> TCPIP socket"""
+    
+    dat = ""
+    while 1:
+        message = session.recv(4096).decode()
+        last=len(message)
+        if message[last-1] == "\n":
+            dat=dat+message[:-1]
+            return dat
+        else:
+            dat=dat+message
+
+def get_error(session, command):
+    """Checks an instrument for errors and print( them out )
+        Returns True if any errors are encountered
+
+        Arguments:
+        session -> TCPIP socket connection
+        command -> text containing an instrument command"""
+        
+    has_err=False
+    resp = SCPI_sock_query(session,"SYST:ERR?")
+    
+    if int(resp[:2]) != 0:
+        print( "Your command: " + command + " has errors:" )
+        print( resp )
+        has_err = True
+    while int(resp[:2]) != 0:
+        resp=SCPI_sock_query(session,"SYST:ERR?")
+        if int(resp[:2]) != 0:
+            print( resp )
+
+    return has_err
+
+
+
   
   
