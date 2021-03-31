@@ -66,7 +66,7 @@ runs perfectly fine on Linux via WINE.
 - generate square pulses with arbitrary "idle" and "on" levels (-0.5 to 0.5V)
 
 
-example usage:
+example usage (command line):
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/pulser.png)
 
@@ -91,6 +91,29 @@ example usage:
 ```
 - if no "period=" argument is given, the AWG will use its maximum memory depth, resulting
 in the maximum sample length of circa 4us (at maximum sampling rate = 65GHz).
+
+
+
+example usage (python module):
+
+```
+#!/usr/bin/env python3
+
+from M8195A import pulser
+
+pulser(
+    ip="192.168.0.208",
+    trace=1,
+    period="2u",
+    width="20n",
+    leading_edge="1n",
+    trailing_edge="5n",
+    on_val="150m",
+    idle_val="-20m"
+)
+
+```
+
 
 optional parameters/standard values:
 ```
