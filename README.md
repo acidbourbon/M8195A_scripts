@@ -57,7 +57,7 @@ You can also use the M8195A module directly in python3. The syntax is the same a
 Or you can directly send numpy data vectors to the AWG (see below for more detailed example).
 
 ```python
-import M8295A as awg
+import M8195A as awg
 # the python functions behind the individual utility .py scripts
 awg.pulser(ip="192.168.0.123", trace=1, width="20n", delay="100n")
 awg.send_csv(ip="192.168.0.123", trace=2, file="waveform.csv")
