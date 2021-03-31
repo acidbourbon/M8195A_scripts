@@ -17,6 +17,89 @@ from scipy import interpolate
 local_objects = {}
 
 
+
+
+
+
+
+
+def pulser(**kwargs):
+
+  trace       = int(kwargs.get("trace",1))
+  on_val      = spice_float(kwargs.get("on_val",0.5))
+  idle_val    = spice_float(kwargs.get("idle_val",0))
+  width       = spice_float(kwargs.get("width",50e-9))
+  delay       = spice_float(kwargs.get("delay",0e-9))
+  sample_rate = int(spice_float(kwargs.get("sample_rate",65e9)))
+  invert      = int(kwargs.get("invert",0))
+  
+  ip = "192.168.0.203"
+  if(os.getenv('M8195A_IP')):
+    ip = os.getenv('M8195A_IP')
+  ip          = str(kwargs.get("ip",ip))
+  print("target ip : {}".format(ip))
+  
+  period      = spice_float(kwargs.get("period",0))
+  yscale      = spice_float(kwargs.get("yscale",1))
+  xscale      = spice_float(kwargs.get("xscale",1))
+  
+  leading_edge   = spice_float(kwargs.get("leading_edge",0))
+  trailing_edge  = spice_float(kwargs.get("trailing_edge",0))
+
+  
+  
+  #xdata = np.arange(0,width,1./sample_rate)
+  #ydata = np.ones(len(xdata))*on_val
+  
+  delay += leading_edge/2
+  
+  xlist = []
+  ylist = []
+  
+  xlist += [-leading_edge/2]
+  ylist += [idle_val]
+  
+  xlist += [leading_edge/2]
+  ylist += [on_val]
+  
+  xlist += [width - trailing_edge/2]
+  ylist += [on_val]
+  
+  xlist += [width + trailing_edge/2]
+  ylist += [idle_val]
+  
+  
+  xdata = np.array(xlist)
+  ydata = np.array(ylist)
+  
+  session = open_session(ip)
+
+  
+  program_trace( xdata, ydata, 
+                     trace       = trace,
+                     idle_val    = idle_val,
+                     xscale      = xscale,
+                     yscale      = yscale,
+                     delay       = delay,
+                     invert      = invert,
+                     sample_rate = sample_rate,
+                     period      = period
+                  )
+
+  run()
+  close_session()
+
+
+
+
+
+
+
+
+
+
+
+
 def spice_float(argument):
    
   if( isinstance(argument,str)):
