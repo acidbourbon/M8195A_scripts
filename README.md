@@ -297,7 +297,8 @@ awg_ip = "192.168.0.208"
 def gauss(x, **kwargs):
   mu = kwargs.get("mu",0)
   sigma = kwargs.get("sigma",1)
-  A = kwargs.get("A",1./(sigma*(2.*np.pi)**0.5)) ## default amplitude generates bell curve with area = 1
+  ## default amplitude A generates bell curve with area = 1
+  A = kwargs.get("A",1./(sigma*(2.*np.pi)**0.5)) 
   return A*np.exp(-(x-mu)**2/(2.*sigma**2))
 
 
