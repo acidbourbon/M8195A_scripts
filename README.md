@@ -53,8 +53,16 @@ If you don't want to type the ip argument all the time, you can export the ip as
 export M8195A_IP=192.168.0.123
 ```
 
+You can also use the M8195A module directly in python3. The syntax is the same as the command line scripts:
+```
+import M8295A as awg
+awg.pulser(ip="192.168.0.123", arg1="arg1", arg2="arg2")
+```
+you get the idea ...
 
-LTSpice, a Windows application,
+---
+
+LTspice, a Windows application,
 runs perfectly fine on Linux via WINE. 
 (http://ltspice.analog.com/software/LTspiceXVII.exe)
 
@@ -265,6 +273,53 @@ example usage:
 If a change is detected, the AWG will be re-programmed automatically.
 
 ![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/watch_changes.png)
+
+## send python/numpy data directly
+
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/gauss_scope.png)
+
+Recorded waveform was generated with the following python code:
+
+```
+#!/usr/bin/env python3
+
+import numpy as np
+from matplotlib import pyplot as plt
+
+import M8195A as awg
+awg_ip = "192.168.0.208"
+
+##################################################
+##                 gauss pulse                  ##
+##################################################
+
+
+def gauss(x, **kwargs):
+  mu = kwargs.get("mu",0)
+  sigma = kwargs.get("sigma",1)
+  A = kwargs.get("A",1./(sigma*(2.*np.pi)**0.5)) ## default amplitude generates bell curve with area = 1
+  return A*np.exp(-(x-mu)**2/(2.*sigma**2))
+
+
+
+period = 1e-6
+
+x=np.arange(0,period,0.1e-9)
+
+y=gauss(x,sigma=20e-9,mu=300e-9,A=200e-3)
+
+plt.plot(x*1e9,y)
+plt.xlabel("time (ns)")
+plt.ylabel("voltage (V)")
+plt.show()
+
+awg.send_data(x,y,
+              trace=1,
+              ip=awg_ip,
+              period=period)
+
+```
+![Photo](https://github.com/acidbourbon/M8195A_scripts/blob/master/pics/gauss_plot.png)
 
 
 ## Acknowledgements

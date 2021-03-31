@@ -20,6 +20,48 @@ local_objects = {}
 
 
 
+def send_data(xdata,ydata,**kwargs):
+
+  trace       = int(kwargs.get("trace",1))
+  idle_val    = spice_float(kwargs.get("idle_val",0))
+  delay       = spice_float(kwargs.get("delay",0e-9))
+  sample_rate = int(spice_float(kwargs.get("sample_rate",65e9)))
+  invert      = int(kwargs.get("invert",0))
+  
+  ip = "192.168.0.203"
+  if(os.getenv('M8195A_IP')):
+    ip = os.getenv('M8195A_IP')
+  ip          = str(kwargs.get("ip",ip))
+  print("target ip : {}".format(ip))
+  
+  period      = spice_float(kwargs.get("period",0))
+  yscale      = spice_float(kwargs.get("yscale",1))
+  xscale      = spice_float(kwargs.get("xscale",1))
+  
+
+  
+  
+  
+  
+  my_xdata = np.array(xdata)
+  my_ydata = np.array(ydata)
+  
+  session = open_session(ip)
+
+  
+  program_trace( my_xdata, my_ydata, 
+                     trace       = trace,
+                     idle_val    = idle_val,
+                     xscale      = xscale,
+                     yscale      = yscale,
+                     delay       = delay,
+                     invert      = invert,
+                     sample_rate = sample_rate,
+                     period      = period
+                  )
+
+  run()
+  close_session()
 
 
 
