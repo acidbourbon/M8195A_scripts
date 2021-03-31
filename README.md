@@ -53,10 +53,18 @@ If you don't want to type the ip argument all the time, you can export the ip as
 export M8195A_IP=192.168.0.123
 ```
 
-You can also use the M8195A module directly in python3. The syntax is the same as the command line scripts:
+You can also use the M8195A module directly in python3. The syntax is the same as the command line scripts.
+Or you can directly send numpy data vectors to the AWG (see below for more detailed example).
+
 ```
 import M8295A as awg
-awg.pulser(ip="192.168.0.123", arg1="arg1", arg2="arg2")
+awg.pulser(ip="192.168.0.123", trace=1, width="20n", delay="100n")
+awg.send_csv(ip="192.168.0.123", trace=2, file="waveform.csv")
+awg.send_ltspice(ip="192.168.0.123", trace=3, file="example.raw", signal="V(output)")
+
+# directly send numpy vectors
+awg.send_data(xdata, ydata, ip="192.168.0.123", trace=4)
+
 ```
 you get the idea ...
 
