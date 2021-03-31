@@ -56,8 +56,9 @@ export M8195A_IP=192.168.0.123
 You can also use the M8195A module directly in python3. The syntax is the same as the command line scripts.
 Or you can directly send numpy data vectors to the AWG (see below for more detailed example).
 
-```
+```python
 import M8295A as awg
+# the python functions behind the individual utility .py scripts
 awg.pulser(ip="192.168.0.123", trace=1, width="20n", delay="100n")
 awg.send_csv(ip="192.168.0.123", trace=2, file="waveform.csv")
 awg.send_ltspice(ip="192.168.0.123", trace=3, file="example.raw", signal="V(output)")
@@ -112,7 +113,7 @@ in the maximum sample length of circa 4us (at maximum sampling rate = 65GHz).
 
 example usage (python module):
 
-```
+```python
 #!/usr/bin/env python3
 
 from M8195A import pulser
@@ -125,7 +126,9 @@ pulser(
     leading_edge="1n",
     trailing_edge="5n",
     on_val="150m",
-    idle_val="-20m"
+    idle_val="-20m",
+    delay="10n",
+    invert=0
 )
 
 ```
@@ -288,7 +291,7 @@ If a change is detected, the AWG will be re-programmed automatically.
 
 Recorded waveform was generated with the following python code:
 
-```
+```python
 #!/usr/bin/env python3
 
 import numpy as np
