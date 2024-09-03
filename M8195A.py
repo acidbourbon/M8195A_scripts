@@ -748,6 +748,7 @@ def SCPI_sock_connect(ipaddress,port=5025):
     return session
 
 def SCPI_sock_send(session,command,error_check=False):
+    #print("SCPI send: {}".format(command))
     """Sends a command to an instrument
 
         Arguments:
